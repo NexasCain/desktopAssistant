@@ -22,23 +22,29 @@ def talkToMe(audio):
 
 def myCommand():
     "listens for commands"
+    
+    # This is to improve response time after giving a command after prolonged silence
+    command_recieved = False
+    while command_recieved == False:
 
-    r = sr.Recognizer()
+        r = sr.Recognizer()
 
-    with sr.Microphone() as source:
-        print('Ready...')
-        r.pause_threshold = 1
-        r.adjust_for_ambient_noise(source, duration=1)
-        audio = r.listen(source)
+        with sr.Microphone() as source:
+            print('Ready...')
+            r.pause_threshold = 1
+            r.adjust_for_ambient_noise(source, duration=1)
+            audio = r.listen(source)
 
-    try:
-        command = r.recognize_google(audio).lower()
-        print('You said: ' + command + '\n')
+        try:
+            command = r.recognize_google(audio).lower()
+            print('You said: ' + command + '\n')
+            command_recieved = True
 
-    #loop back to continue to listen for commands if unrecognizable speech is received
-    except sr.UnknownValueError:
-        print('Your last command couldn\'t be heard')
-        command = myCommand();
+        #loop back to continue to listen for commands if unrecognizable speech is received
+        except sr.UnknownValueError:
+            print('Your last command couldn\'t be heard')
+            # command = myCommand();
+            command_recieved = False
 
     return command
 
